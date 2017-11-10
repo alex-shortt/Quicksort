@@ -1,59 +1,37 @@
-import java.util.Random;
-
 public class Quicksort {
-    private int[] numbers;
-    private int number;
-
-    public void sort(int[] values) {
-        // check for empty or null array
-        if (values == null || values.length == 0) {
-            return;
+    private static void sort(int[] list, int left, int right){
+        if(left<right){
+            int loc = partition(list,left,right);
+            sort(list,left,loc-1);
+            sort(list,loc+1,right);
         }
-        this.numbers = values;
-        number = values.length;
-        quicksort(0, number - 1);
     }
 
-    private void quicksort(int low, int high) {
-        int i = low, j = high;
-        // Get the pivot element from the middle of the list
-        int pivot = numbers[low + (high - low) / 2];
+    private static int partition(int[] list, int left, int right){
+        int pivot = list[right];
+        int trail = left-1;
+        int temp;
 
-        // Divide into two lists
-        while (i <= j) {
-            // If the current value from the left list is smaller than the pivot
-            // element then get the next element from the left list
-            while (numbers[i] < pivot) {
-                i++;
-            }
-            // If the current value from the right list is larger than the pivot
-            // element then get the next element from the right list
-            while (numbers[j] > pivot) {
-                j--;
-            }
-
-            // If we have found a value in the left list which is larger than
-            // the pivot element and if we have found a value in the right list
-            // which is smaller than the pivot element then we exchange the
-            // values.
-            // As we are done we can increase i and j
-            if (i <= j) {
-                exchange(i, j);
-                i++;
-                j--;
+        for(int walker = left;walker<=right-1;walker++){
+            if(list[walker]<=pivot){
+                trail++;
+                //swapping values
+                temp = list[walker];
+                list[walker] = list[trail];
+                list[trail] = temp;
+                //end swapping values
             }
         }
-        // Recursion
-        if (low < j)
-            quicksort(low, j);
-        if (i < high)
-            quicksort(i, high);
+        //swapping values
+        temp = list[right];
+        list[right] = list[trail+1];
+        list[trail+1] = temp;
+        //end swapping values
+        return trail+1;
     }
 
-    private void exchange(int i, int j) {
-        int temp = numbers[i];
-        numbers[i] = numbers[j];
-        numbers[j] = temp;
+    public static void sort(int[] list) {
+        sort(list,0, list.length -1);
     }
 
     public void printArray(int[] numbers){
