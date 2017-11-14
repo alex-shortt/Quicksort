@@ -11,8 +11,17 @@ public class BarHandler {
     }
 
     public void addBar(Bar bar){
-        bar.setPosIndex(bars.size());
+        bar.setIndex(bars.size());
         bars.add(bar);
         stage.setWidth((bar.getX_PADDING() * 2) + (bars.size() * bar.getFullWidth()));
+    }
+
+    public void switchBars(int x , int y){
+        bars.get(x).animateSetIndex(y);
+        bars.get(y).animateSetIndex(x);
+
+        Bar temp = bars.get(x);
+        bars.set(x, bars.get(y));
+        bars.set(y, temp);
     }
 }

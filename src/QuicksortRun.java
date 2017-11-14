@@ -2,6 +2,7 @@ import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
 import java.util.Random;
 
 public class QuicksortRun extends Application {
@@ -10,7 +11,7 @@ public class QuicksortRun extends Application {
     private final int NUM_BARS = 10;
     private final int MAX_VAL = 100;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Quicksort sort = new Quicksort();
 
         int[] numbers = new int[20];
@@ -32,17 +33,20 @@ public class QuicksortRun extends Application {
         Scene scene = new Scene(root, 800, 300);
         stage.setScene(scene);
 
-        Random r = new Random();
-        BarHandler barHandler = new BarHandler(stage);
-
-        for(int i = 0; i < NUM_BARS; i++){
-            barHandler.addBar(new Bar(root, r.nextInt(MAX_VAL)));
-        }
-
         //begin
         stage.setResizable(false);
         stage.setScene(scene);
         stage.setTitle("Quicksort");
         stage.show();
+
+        Random r = new Random();
+        BarHandler barHandler = new BarHandler(stage);
+
+        for (int i = 0; i < NUM_BARS; i++) {
+            barHandler.addBar(new Bar(root, r.nextInt(MAX_VAL)));
+        }
+
+        barHandler.switchBars(3, 7);
+        //barHandler.switchBars(1, 9);
     }
 }
