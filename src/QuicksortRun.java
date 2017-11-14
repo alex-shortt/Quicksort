@@ -12,19 +12,8 @@ public class QuicksortRun extends Application {
     private final int MAX_VAL = 100;
 
     public static void main(String[] args) {
-        Quicksort sort = new Quicksort();
-
-        int[] numbers = new int[20];
-        Random generator = new Random();
-        for (int i = 0; i < numbers.length; i++) {
-            numbers[i] = generator.nextInt(100);
-        }
-
-        sort.printArray(numbers);
-        sort.sort(numbers);
-        sort.printArray(numbers);
-
         launch(args);
+
     }
 
     @Override
@@ -46,7 +35,8 @@ public class QuicksortRun extends Application {
             barHandler.addBar(new Bar(root, r.nextInt(MAX_VAL)));
         }
 
-        barHandler.switchBars(3, 7);
-        //barHandler.switchBars(1, 9);
+        barHandler.printBars();
+        barHandler.sort();
+        barHandler.printBars();
     }
 }

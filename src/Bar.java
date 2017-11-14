@@ -45,14 +45,14 @@ public class Bar {
         double dist = (i - index) * getFullWidth();
         double cycles = time * 100;
         final int[] yCount = {1};
-        int amplitude = -35;
+        int amplitude = 35;
 
         rect.toFront();
         text.toFront();
 
         Timeline loop = new Timeline(new KeyFrame(Duration.millis(10), t -> {
             this.translateX((dist / cycles));
-            this.setRelativePosY(amplitude * Math.sin(20 * yCount[0] / cycles / 2 / Math.PI));
+            this.setRelativePosY(-amplitude * Math.sin(20 * yCount[0] / cycles / 2 / Math.PI));
             yCount[0]++;
         }));
         loop.setCycleCount((int) cycles);
@@ -94,6 +94,10 @@ public class Bar {
 
     public double getX_PADDING() {
         return X_PADDING;
+    }
+
+    public int val(){
+        return val;
     }
 
     public int getIndex() {

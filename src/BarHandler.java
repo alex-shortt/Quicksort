@@ -1,10 +1,18 @@
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
 
+import static java.lang.Thread.sleep;
+
 public class BarHandler {
     private ArrayList<Bar> bars = new ArrayList<>();
     private Stage stage;
+
+    final Color NORMAL_COLOR = Color.rgb(173, 216, 230  );
+    final Color PIVOT_COLOR = Color.rgb(255, 165, 0  );
+    final Color SORTED_COLOR = Color.rgb(230, 52, 29);
+    final Color HIGHLITED_COLOR = Color.rgb(0, 128, 0  );
 
     public BarHandler(Stage passStage){
         stage = passStage;
@@ -17,11 +25,59 @@ public class BarHandler {
     }
 
     public void switchBars(int x , int y){
-        bars.get(x).animateSetIndex(y);
-        bars.get(y).animateSetIndex(x);
+        //bars.get(x).animateSetIndex(y);
+        //bars.get(y).animateSetIndex(x);
 
         Bar temp = bars.get(x);
         bars.set(x, bars.get(y));
         bars.set(y, temp);
+    }
+
+    public void highlightBar(){
+
+    }
+
+    public void setPivot(int i){
+        for(Bar bar : bars){
+            bar.setColor(NORMAL_COLOR);
+        }
+        bars.get(i).setColor(PIVOT_COLOR);
+    }
+
+    private void sort(int left, int right) {
+        if (left < right) {
+            int loc = partition(left, right);
+            sort(left, loc - 1);
+            sort(loc + 1, right);
+        }
+    }
+
+    private int partition(int left, int right) {
+        int pivot = bars.get(right).val(); //bars.get(right).val()
+        int trail = left - 1;
+        int temp;
+
+        for (int walker = left; walker <= right - 1; walker++) {
+            if (bars.get(walker).val() <= pivot) { //bars.get(walker).val()
+                trail++;
+                //swapping values
+                switchBars(walker, trail);
+                //end swapping values
+            }
+        }
+        switchBars(right, trail + 1);
+        return trail + 1;
+    }
+
+    public void sort() {
+        sort(0, bars.size() - 1); //0, bars.size() - 1
+    }
+
+    public void printBars() {
+        System.out.print("{ ");
+        for (int i = 0; i < bars.size() - 1; i++) {
+            System.out.print(bars.get(i).val() + ", ");
+        }
+        System.out.println(bars.get(bars.size() - 1).val() + " }");
     }
 }
