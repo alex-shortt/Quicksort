@@ -7,7 +7,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
-import java.util.Random;
 
 public class Bar {
     Rectangle rect;
@@ -20,7 +19,7 @@ public class Bar {
     private final double WIDTH = 40;
     private final double X_PADDING = 20;
     private final double X_MARGIN = 5;
-    private final double time = 1.25;
+    private final double time = .75;
 
     public Bar(Group passRoot, int passVal) {
         root = passRoot;
@@ -41,9 +40,9 @@ public class Bar {
         index = 0;
     }
 
-    public void animateSetIndex(int i) {
+    public void animateSetIndex(int i, Runnable onFinish) {
         double dist = (i - index) * getFullWidth();
-        double cycles = time * 100;
+        final double cycles = time * 100;
         final int[] yCount = {1};
         int amplitude = 35;
 
@@ -56,10 +55,12 @@ public class Bar {
             yCount[0]++;
         }));
         loop.setCycleCount((int) cycles);
-        loop.setOnFinished(event -> this.setRelativePosY(0));
-        loop.play();
-
+        loop.setOnFinished(event -> {
+            this.setRelativePosY(0);
+            if(onFinish != null) onFinish.run();
+        });
         index = i;
+        loop.play();
     }
 
     public void setIndex(int i) {
@@ -96,7 +97,7 @@ public class Bar {
         return X_PADDING;
     }
 
-    public int val(){
+    public int val() {
         return val;
     }
 

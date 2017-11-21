@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -8,12 +9,11 @@ import java.util.Random;
 public class QuicksortRun extends Application {
 
     private static Group root;
-    private final int NUM_BARS = 10;
+    private final int NUM_BARS = 20;
     private final int MAX_VAL = 100;
 
     public static void main(String[] args) {
         launch(args);
-
     }
 
     @Override
@@ -37,6 +37,14 @@ public class QuicksortRun extends Application {
 
         barHandler.printBars();
         barHandler.sort();
+        barHandler.doQueue();
         barHandler.printBars();
+
+
+        scene.setOnMouseClicked(event -> {
+            System.out.println("Switch");
+           barHandler.switchBars(r.nextInt(NUM_BARS), r.nextInt(NUM_BARS));
+        });
     }
+
 }

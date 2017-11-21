@@ -2,43 +2,43 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-
-import static java.lang.Thread.sleep;
+import java.util.Stack;
 
 public class BarHandler {
     private ArrayList<Bar> bars = new ArrayList<>();
+    private ArrayList<Bar> graphicalBars = new ArrayList<>();
     private Stage stage;
 
-    final Color NORMAL_COLOR = Color.rgb(173, 216, 230  );
-    final Color PIVOT_COLOR = Color.rgb(255, 165, 0  );
+    final Color NORMAL_COLOR = Color.rgb(173, 216, 230);
+    final Color PIVOT_COLOR = Color.rgb(255, 165, 0);
     final Color SORTED_COLOR = Color.rgb(230, 52, 29);
-    final Color HIGHLITED_COLOR = Color.rgb(0, 128, 0  );
+    final Color HIGHLITED_COLOR = Color.rgb(0, 128, 0);
 
-    public BarHandler(Stage passStage){
+    Stack<BarAnimation> animationStack = new Stack<>();
+
+    public BarHandler(Stage passStage) {
         stage = passStage;
     }
 
-    public void addBar(Bar bar){
+    public void addBar(Bar bar) {
         bar.setIndex(bars.size());
         bars.add(bar);
+        graphicalBars.add(bar);
         stage.setWidth((bar.getX_PADDING() * 2) + (bars.size() * bar.getFullWidth()));
     }
 
-    public void switchBars(int x , int y){
-        //bars.get(x).animateSetIndex(y);
-        //bars.get(y).animateSetIndex(x);
+    public void switchBars(int x, int y) {
+        if(x == y) return;
+        System.out.println(bars.get(x).val() + " :: " + bars.get(y).val());
+        animationStack.add(new BarAnimation(x, y));
 
         Bar temp = bars.get(x);
         bars.set(x, bars.get(y));
         bars.set(y, temp);
     }
 
-    public void highlightBar(){
-
-    }
-
-    public void setPivot(int i){
-        for(Bar bar : bars){
+    public void setPivot(int i) {
+        for (Bar bar : bars) {
             bar.setColor(NORMAL_COLOR);
         }
         bars.get(i).setColor(PIVOT_COLOR);
@@ -71,6 +71,19 @@ public class BarHandler {
 
     public void sort() {
         sort(0, bars.size() - 1); //0, bars.size() - 1
+    }
+
+    public void doQueue() {
+        if (animationStack.size() <= 0)
+            return;
+
+        BarAnimation anim = animationStack.remove(0);
+        graphicalBars.get(anim.startIndex).animateSetIndex(anim.endIndex, null);
+        graphicalBars.get(anim.endIndex).animateSetIndex(anim.startIndex, () -> doQueue());
+
+        Bar temp = graphicalBars.get(anim.startIndex);
+        graphicalBars.set(anim.startIndex, graphicalBars.get(anim.endIndex));
+        graphicalBars.set(anim.endIndex, temp);
     }
 
     public void printBars() {
