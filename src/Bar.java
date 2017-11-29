@@ -19,7 +19,7 @@ public class Bar {
     private final double WIDTH = 40;
     private final double X_PADDING = 20;
     private final double X_MARGIN = 5;
-    private final double time = .75;
+    private final double time = 1.25;
 
     public Bar(Group passRoot, int passVal) {
         root = passRoot;

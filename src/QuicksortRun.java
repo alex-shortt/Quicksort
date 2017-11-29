@@ -39,12 +39,6 @@ public class QuicksortRun extends Application {
         barHandler.sort();
         barHandler.doQueue();
         barHandler.printBars();
-
-
-        scene.setOnMouseClicked(event -> {
-            System.out.println("Switch");
-           barHandler.switchBars(r.nextInt(NUM_BARS), r.nextInt(NUM_BARS));
-        });
     }
 
 }

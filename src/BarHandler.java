@@ -22,6 +22,7 @@ public class BarHandler {
 
     public void addBar(Bar bar) {
         bar.setIndex(bars.size());
+        bar.setColor(NORMAL_COLOR);
         bars.add(bar);
         graphicalBars.add(bar);
         stage.setWidth((bar.getX_PADDING() * 2) + (bars.size() * bar.getFullWidth()));
@@ -30,7 +31,7 @@ public class BarHandler {
     public void switchBars(int x, int y) {
         if(x == y) return;
         System.out.println(bars.get(x).val() + " :: " + bars.get(y).val());
-        animationStack.add(new BarAnimation(x, y));
+        animationStack.add(BarAnimation.swap(x, y));
 
         Bar temp = bars.get(x);
         bars.set(x, bars.get(y));
@@ -46,6 +47,7 @@ public class BarHandler {
 
     private void sort(int left, int right) {
         if (left < right) {
+            animationStack.add(BarAnimation.sort(left, right));
             int loc = partition(left, right);
             sort(left, loc - 1);
             sort(loc + 1, right);
@@ -73,17 +75,40 @@ public class BarHandler {
         sort(0, bars.size() - 1); //0, bars.size() - 1
     }
 
+    BarAnimation currentRange = null;
+
     public void doQueue() {
-        if (animationStack.size() <= 0)
+        if (animationStack.size() <= 0){
+            if(currentRange != null){
+               for(int i= currentRange.startIndex; i <= currentRange.endIndex; ++i) {
+                       graphicalBars.get(i).setColor(NORMAL_COLOR);
+                   }
+               }
             return;
+        }
+            
 
         BarAnimation anim = animationStack.remove(0);
-        graphicalBars.get(anim.startIndex).animateSetIndex(anim.endIndex, null);
-        graphicalBars.get(anim.endIndex).animateSetIndex(anim.startIndex, () -> doQueue());
+        if (anim.isSwap) {
+            graphicalBars.get(anim.startIndex).animateSetIndex(anim.endIndex, null);
+            graphicalBars.get(anim.endIndex).animateSetIndex(anim.startIndex, () -> doQueue());
 
-        Bar temp = graphicalBars.get(anim.startIndex);
-        graphicalBars.set(anim.startIndex, graphicalBars.get(anim.endIndex));
-        graphicalBars.set(anim.endIndex, temp);
+            Bar temp = graphicalBars.get(anim.startIndex);
+            graphicalBars.set(anim.startIndex, graphicalBars.get(anim.endIndex));
+            graphicalBars.set(anim.endIndex, temp);
+        } else {
+            if (currentRange != null) {
+                for(int i= currentRange.startIndex; i <= currentRange.endIndex; ++i) {
+                    graphicalBars.get(i).setColor(NORMAL_COLOR);
+                }
+            }
+            currentRange = anim;
+            for(int i= currentRange.startIndex; i <= currentRange.endIndex-1; ++i) {
+                graphicalBars.get(i).setColor(HIGHLITED_COLOR);
+            }
+            graphicalBars.get(anim.endIndex).setColor(PIVOT_COLOR);
+            doQueue();
+        }
     }
 
     public void printBars() {
